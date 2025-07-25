@@ -105,7 +105,7 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
               />
             </div>
 
-            {error && <p className="text-red-500 text-sm -mt-2">{error}</p>}
+            {/* {error && <p className="text-red-500 text-sm -mt-2">{error}</p>} */}
 
            <CtaButton disabled={loading }>
  {loading && (

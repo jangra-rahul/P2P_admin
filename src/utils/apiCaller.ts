@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig, Method, AxiosError } from 'axios';
 import Router from 'next/router';
 import { toastUtil } from './toastUtil';
+const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export async function apiCaller<T>(
   method: Method,
@@ -13,7 +14,7 @@ export async function apiCaller<T>(
 
   const config: AxiosRequestConfig = {
     method,
-    url: `${process.env.NEXT_PUBLIC_API_URL}/${url}`,
+    url: `${baseUrl}/${url}`,
     headers: {
       'Content-Type': isFormData ? 'multipart/form-data' : 'application/json',
       ...(token && { Authorization: `Bearer ${token}` }),
