@@ -9,8 +9,6 @@
 //   main?: boolean;
 // };
 
-
-
 // type ButtonProps = BaseProps & {
 //   url?: never;
 //   onClick?: ButtonHTMLAttributes<HTMLButtonElement>["onClick"];
@@ -52,7 +50,7 @@
 //         onClick={onClick}
 //         href={url}
 //         target={blank}
-//         className={baseClasses}
+//         className={baseClasses} legacyBehavior
 //       >
 //         {children}
 //       </Link>
@@ -71,12 +69,12 @@
 
 
 
+
 import Link from "next/link";
 import {
   ButtonHTMLAttributes,
-  AnchorHTMLAttributes,
-  MouseEventHandler,
   ReactNode,
+  AnchorHTMLAttributes,
 } from "react";
 
 type BaseProps = {
@@ -87,28 +85,31 @@ type BaseProps = {
   main?: boolean;
 };
 
-type ButtonProps = BaseProps & {
-  url?: undefined;
-  onClick?: MouseEventHandler<HTMLButtonElement>;
-} & ButtonHTMLAttributes<HTMLButtonElement>;
-
-type AnchorProps = BaseProps & {
+type LinkProps = BaseProps & {
   url: string;
-  onClick?: MouseEventHandler<HTMLAnchorElement>;
+  onClick?: (event: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => void;
   blank?: "_blank" | "_self" | "_parent" | "_top";
 } & AnchorHTMLAttributes<HTMLAnchorElement>;
 
-type CtaButtonProps = ButtonProps | AnchorProps;
+type ButtonProps = BaseProps & {
+  url?: never;
+  onClick?: (event: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => void;
+  blank?: never;
+} & ButtonHTMLAttributes<HTMLButtonElement>;
 
-const CtaButton = (props: CtaButtonProps) => {
-  const {
-    children,
-    left,
-    className = "",
-    transparent,
-    main,
-  } = props;
+type CtaButtonProps = ButtonProps | LinkProps;
 
+const CtaButton = ({
+  children,
+  left,
+  onClick,
+  className = "",
+  transparent,
+  url,
+  blank,
+  main,
+  ...rest
+}: CtaButtonProps) => {
   const baseClasses = `${className} ${
     left ? "ml-0 text-left" : "mx-auto text-center flex justify-center"
   } ${
@@ -117,35 +118,24 @@ const CtaButton = (props: CtaButtonProps) => {
       : "text-white bg-purple py-3 lg:py-4 w-full text-base hover:bg-purple-light"
   } font-normal cursor-pointer leading-100 rounded-[10px] duration-300`;
 
-  if ('url' in props && props.url) {
-    // Handle link case
-    const { url, onClick, blank, ...rest } = props as AnchorProps;
-
+  if (url) {
+    const linkProps = rest as LinkProps;
     return (
-      <Link href={url} legacyBehavior passHref>
-        <a
-          {...rest}
-          onClick={onClick}
-          target={blank}
-          className={baseClasses}
-          rel={blank === "_blank" ? "noopener noreferrer" : undefined}
-        >
-          {children}
-        </a>
+      <Link
+        {...linkProps}
+        onClick={onClick}
+        href={url}
+        target={blank}
+        className={baseClasses}
+      >
+        {children}
       </Link>
     );
   }
 
-  // Handle button case
-  const { onClick, ...rest } = props as ButtonProps;
-
+  const buttonProps = rest as ButtonProps;
   return (
-    <button
-      {...rest}
-      onClick={onClick}
-      className={baseClasses}
-      type="button"
-    >
+    <button {...buttonProps} onClick={onClick} className={baseClasses}>
       {children}
     </button>
   );

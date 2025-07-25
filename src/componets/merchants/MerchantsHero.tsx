@@ -66,7 +66,6 @@ const MerchantsHero = () => {
   const merchantsData:any = merchants?.data || [];
   const pagenationData:any = merchants?.pagination || [];
 
-
  
   
    useEffect(() => {
