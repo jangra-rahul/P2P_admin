@@ -35,10 +35,10 @@ const  ApproverMerchantsList = ({
 
    const handleCheckboxChange = (id: string) => {
   setSelectedMerchants((prev) =>
-    prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    prev.includes(id) ? prev?.filter((i) => i !== id) : [...prev, id]
   );
 };
-    const filteredMerchants = merchantsData?.filter((merchant) =>
+    const filteredMerchants:any = merchantsData?.filter((merchant) =>
         merchant?.merchantName?.toLowerCase().includes(tempSearchTerm?.toLowerCase())
     );
 
