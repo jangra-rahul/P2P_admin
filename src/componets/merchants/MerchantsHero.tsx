@@ -6,50 +6,9 @@ import CtaSearch from "../custom-ui/CtaSearch";
 import CtaTable from "../custom-ui/CtaTable";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
-import { getMerchantsRequest } from "@/redux/slice/merchantSlice";
+import { changeMerchantStatusRequest, editMerchantRequest, getMerchantsRequest } from "@/redux/slice/merchantSlice";
+import EditMerchantModal from "./EditMerchantModal";
 
-// const merchantsData = [
-//     {
-//         name: "PayEase",
-//         deposit: "35,0000",
-//         limit: "40,0000",
-//         email: "PayEase@gmail.com",
-//         status: "Inactive",
-//         created: "Apr 03, 2022, 14:15 PM",
-//     },
-//     {
-//         name: "CashNow",
-//         deposit: "70,0000",
-//         limit: "85,0000",
-//         email: "CashNow@gmail.com",
-//         status: "Active",
-//         created: "Apr 04, 2022, 10:45 AM",
-//     },
-//     {
-//         name: "PayFast",
-//         deposit: "45,0000",
-//         limit: "55,0000",
-//         email: "PayFast@gmail.com",
-//         status: "Active",
-//         created: "Apr 05, 2022, 13:30 PM",
-//     },
-//     {
-//         name: "MoneyExpress",
-//         deposit: "80,0000",
-//         limit: "90,0000",
-//         email: "MoneyExpress@gmail.com",
-//         status: "Inactive",
-//         created: "Apr 06, 2022, 16:00 PM",
-//     },
-//     {
-//         name: "PayQuick",
-//         deposit: "50,0000",
-//         limit: "60,0000",
-//         email: "PayQuick@gmail.com",
-//         status: "Active",
-//         created: "Apr 07, 2022, 09:30 AM",
-//     },
-// ];
 
 const MerchantsHero = () => {
   const [tempSearchTerm, setTempSearchTerm] = useState("");
@@ -58,6 +17,8 @@ const MerchantsHero = () => {
   const [selectedMerchants, setSelectedMerchants] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+const [editMerchant, setEditMerchant] = useState<any>(null);
+
 
   const dispatch = useDispatch();
   const { merchants } :any = useSelector(
@@ -119,38 +80,28 @@ const totalPages = Math.ceil((pagenationData.totalCount || 0) / itemsPerPage);
     }
   };
 
+    const handleStatusToggle = (merchant) => {
+    const normalizedStatus = merchant.status?.toLowerCase();
+  
+    const newStatus = normalizedStatus === "active" ? "inactive" : "active";
+  
+  
+    dispatch(
+      changeMerchantStatusRequest({
+        id: merchant._id, // or merchant.id depending on your data
+        status: newStatus,
+      })
+    );
+  
+    // Optional: reload list after a delay or use success saga to auto-refresh
+    setTimeout(() => {
+      dispatch(getMerchantsRequest({ search: tempSearchTerm, page: currentPage, limit: 10 }));
+    }, 500);
+  };
+
   return (
     <div className="max-w-[1100px] 2xl:mx-auto pt-2 min-[1441px]:max-w-[1200px] lg:px-[22px] bg-white w-full relative py-3 rounded-xl">
-      {/* <div className="flex flex-wrap gap-y-2.5 md:gap-y-5 gap-5">
-        <CtaDropDown
-          data={uniqueNames}
-          value={tempNameFilter}
-          onChange={setTempNameFilter}
-          placeholder="Merchant Name"
-          dropdownRef={nameDropdownRef}
-        />
-        <CtaDropDown
-          data={uniqueStatuses}
-          value={tempStatusFilter}
-          onChange={setTempStatusFilter}
-          placeholder="Status"
-          icon="flag"
-          dropdownRef={statusDropdownRef}
-        />
-        <CtaButton
-          left
-          className={`${
-            loadClicked ? "bg-purple text-white" : "bg-purple text-white"
-          }`}
-          onClick={handleLoad}
-          main
-        >
-          Load
-        </CtaButton>
-        <CtaButton left main onClick={handleReset}>
-          Reset
-        </CtaButton>
-      </div> */}
+    
       <CtaSearch
         addLink="/dashboard/merchants/add-new-merchant"
         searchValue={tempSearchTerm}
@@ -164,7 +115,7 @@ const totalPages = Math.ceil((pagenationData.totalCount || 0) / itemsPerPage);
         <CtaTable
           columns={[
             "MERCHANT NAME",
-            "TOTAL DEPOSIT",
+            // "TOTAL DEPOSIT",
             "DAILY LIMIT",
             "EMAIL",
             "STATUS",
@@ -199,9 +150,9 @@ const totalPages = Math.ceil((pagenationData.totalCount || 0) / itemsPerPage);
               <td className="text-[#4B5563] text-sm font-normal text-nowrap px-2.5">
                 {m.merchantName}
               </td>
-              <td className="text-[#4B5563] text-sm font-normal text-nowrap px-2.5">
+              {/* <td className="text-[#4B5563] text-sm font-normal text-nowrap px-2.5">
                 {m.deposit}
-              </td>
+              </td> */}
               <td className="text-[#4B5563] text-sm font-normal text-nowrap px-2.5">
                 {m.setDailyLimit}
               </td>
@@ -211,7 +162,7 @@ const totalPages = Math.ceil((pagenationData.totalCount || 0) / itemsPerPage);
               <td className="w-[100px] px-2.5 text-sm font-bold text-center">
                 <span
                   className={`inline-block w-full px-2 py-1 rounded text-xs font-bold ${
-                    m.status === "Active"
+                    m.status === "active"
                       ? "bg-[#EDFFEA] text-[#165E3D]"
                       : "bg-[#FFEAEA] text-[#B83131]"
                   }`}
@@ -233,9 +184,15 @@ const totalPages = Math.ceil((pagenationData.totalCount || 0) / itemsPerPage);
                 <button className="text-sm cursor-pointer underline">
                   View
                 </button>
-                <button className="text-sm cursor-pointer underline">
+                <button onClick={() => setEditMerchant(m)} className="text-sm cursor-pointer underline">
                   Edit
                 </button>
+                 <button onClick={() => handleStatusToggle(m)}
+                // onClick={() => setPopupApprover(m.approverName)}
+                className="text-sm cursor-pointer underline "
+              >
+{m.status?.toLowerCase() === "active" ? "Disable" : "Enable"}
+              </button>
               </td>
             </tr>
           )}
@@ -248,6 +205,19 @@ const totalPages = Math.ceil((pagenationData.totalCount || 0) / itemsPerPage);
   itemsPerPage={pagenationData.limit || 10}
   onPageChange={(page) => setCurrentPage(page)}
 />
+
+
+{editMerchant && (
+  <EditMerchantModal
+    merchant={editMerchant}
+    onClose={() => setEditMerchant(null)}
+    onSave={(updatedData) => {
+      dispatch(editMerchantRequest({ id: editMerchant._id, data: updatedData }));
+      setEditMerchant(null);
+    }}
+  />
+)}
+
     </div>
   );
 };

@@ -5,6 +5,7 @@ const initialState = {
   error: null,
   success: false,
   approvers: [],
+  newApproverId: null,
 };
 
 const ApproverSlice = createSlice({
@@ -16,9 +17,10 @@ const ApproverSlice = createSlice({
       state.error = null;
       state.success = false;
     },
-    addApproverSuccess: (state) => {
+    addApproverSuccess: (state,action) => {
       state.loading = false;
       state.success = true;
+      state.newApproverId = action.payload?.data?._id || null;
     },
     addApproverFailure: (state, action: PayloadAction<string>) => {
       state.loading = false;
@@ -43,6 +45,36 @@ const ApproverSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+
+     changeApproverStatusRequest: (
+  state,
+  _action: PayloadAction<{ id: string; status: string }>
+) => {
+      state.loading = true;
+      state.error = null;
+      state.success = false;
+    },
+    changeApproverStatusSuccess: (state) => {
+      state.loading = false;
+      state.success = true;
+    },
+    changeApproverStatusFailure: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+  editApproverRequest: (state, _action: PayloadAction<{ id: string; data: any }>) => {
+  state.loading = true;
+  state.error = null;
+  state.success = false;
+},
+editApproverSuccess: (state) => {
+  state.loading = false;
+  state.success = true;
+},
+editApproverFailure: (state, action: PayloadAction<string>) => {
+  state.loading = false;
+  state.error = action.payload;
+},
   },
 });
 
@@ -54,6 +86,12 @@ export const {
   getApproverRequest,
   getApproverSuccess,
   getApproverFailure,
+    changeApproverStatusRequest,
+  changeApproverStatusSuccess,
+  changeApproverStatusFailure,
+   editApproverRequest,
+  editApproverSuccess,
+  editApproverFailure,
 } = ApproverSlice.actions;
 
 export default ApproverSlice.reducer;

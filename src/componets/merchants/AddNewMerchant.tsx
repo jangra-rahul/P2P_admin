@@ -21,8 +21,8 @@ const dispatch = useDispatch();
         password: '',
     });
 
-    const [showSuccess, setShowSuccess] = useState(false);
-    const [loader, setLoader] = useState(false);
+    // const [showSuccess, setShowSuccess] = useState(false);
+    // const [loader, setLoader] = useState(false);
 
 
     const handleChange = (e) => {
@@ -30,7 +30,8 @@ const dispatch = useDispatch();
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const isFormValid = Object.values(formData).every((value:any) => value.trim() !== "");
+ const isFormValid =
+  Object.values(formData).every((value: any) => value.trim() !== "");
 
 
 
@@ -49,35 +50,6 @@ const dispatch = useDispatch();
             return () => clearTimeout(timer);
         }
     }, [success, dispatch, router]);
-
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     if (!isFormValid || loading) return;
-
-    //     setLoader(true);
-
-    //     // Simulate API call
-    //     setTimeout(() => {
-    //         console.log("Form submitted:", formData);
-
-    //         setShowSuccess(true);
-    //         setFormData({
-    //             merchantName: '',
-    //             email: '',
-    //             platformName: '',
-    //             setDailyLimit: '',
-    //             password: '',
-    //         });
-
-    //         setLoader(false);
-
-    //         // Redirect after 3 sec
-    //         setTimeout(() => {
-    //             setShowSuccess(false);
-    //             router.push("/dashboard/merchants"); // ✅ Navigate
-    //         }, 3000);
-    //     }, 2000); // simulate 2 second server delay
-    // };
 
     return (
         <div className="max-w-[1100px] 2xl:mx-auto min-[1441px]:max-w-[1200px] lg:px-[22px] bg-white w-full relative py-3 rounded-xl">
@@ -123,22 +95,27 @@ const dispatch = useDispatch();
                         Set Daily Limit
                     </InputWithLabelSub>
 
-                    <InputWithLabelSub
+                  <div>
+                      <InputWithLabelSub
                         name="password"
                         type="password"
-                        placeholder="Enter password"
+                        placeholder="Enter 6 digit password"
                         value={formData.password}
                         onChange={handleChange}
                     >
                         password
                     </InputWithLabelSub>
+                      {formData.password && formData.password.length < 6 && (
+  <p className="text-xs text-red-500 mt-2 ps-2">Password must be at least 6 digits</p>
+)}
+                  </div>
                 </div>
 
-                {showSuccess && (
+                {/* {showSuccess && (
                     <div className="text-green-600 text-xl mt-4 text-center font-medium">
                         ✔️ Data saved successfully!
                     </div>
-                )}
+                )} */}
 
                 <div className="flex justify-center md:justify-end mt-6">
                     <button

@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { changeApproverStatusRequest } from "@/redux/slice/approverSlice";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface Merchant {
   // define your merchant properties here
@@ -13,7 +14,6 @@ interface MerchantState {
   merchants: Merchant[];
 }
 
-
 const initialState: MerchantState = {
   loading: false,
   error: null,
@@ -22,7 +22,7 @@ const initialState: MerchantState = {
 };
 
 const merchantSlice = createSlice({
-  name: 'merchant',
+  name: "merchant",
   initialState,
   reducers: {
     addMerchantRequest: (state) => {
@@ -43,14 +43,72 @@ const merchantSlice = createSlice({
       state.error = null;
       state.success = false;
     },
-    getMerchantsRequest: (state, _action: PayloadAction<{ page: number; limit: number; search: string }>) => {
+    getMerchantsRequest: (
+      state,
+      _action: PayloadAction<{ page: number; limit: number; search: string }>
+    ) => {
       state.loading = true;
     },
-    getMerchantsSuccess: (state, action: PayloadAction<{ data: Merchant[] }>) => {
+    getMerchantsSuccess: (
+      state,
+      action: PayloadAction<{ data: Merchant[] }>
+    ) => {
       state.loading = false;
       state.merchants = action.payload.data;
     },
     getMerchantsFailure: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    changeMerchantStatusRequest: (
+      state,
+      _action: PayloadAction<{ id: string; status: string }>
+    ) => {
+      state.loading = true;
+      state.error = null;
+      state.success = false;
+    },
+    changeMerchantStatusSuccess: (state) => {
+      state.loading = false;
+      state.success = true;
+    },
+    changeMerchantStatusFailure: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+
+    editMerchantRequest: (
+      state,
+      _action: PayloadAction<{ id: string; data: any }>
+    ) => {
+      state.loading = true;
+      state.error = null;
+      state.success = false;
+    },
+    editMerchantSuccess: (state) => {
+      state.loading = false;
+      state.success = true;
+    },
+    editMerchantFailure: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+
+    getUnassignedMerchantsRequest: (
+      state,
+      _action: PayloadAction<{ search?: string }>
+    ) => {
+      state.loading = true;
+      state.error = null;
+    },
+    getUnassignedMerchantsSuccess: (
+      state,
+      action: PayloadAction<{ data: Merchant[] }>
+    ) => {
+      state.loading = false;
+      state.merchants = action.payload.data;
+    },
+    getUnassignedMerchantsFailure: (state, action: PayloadAction<string>) => {
       state.loading = false;
       state.error = action.payload;
     },
@@ -65,6 +123,15 @@ export const {
   getMerchantsRequest,
   getMerchantsSuccess,
   getMerchantsFailure,
+  changeMerchantStatusRequest,
+  changeMerchantStatusSuccess,
+  changeMerchantStatusFailure,
+  editMerchantRequest,
+  editMerchantSuccess,
+  editMerchantFailure,
+  getUnassignedMerchantsRequest,
+getUnassignedMerchantsSuccess,
+getUnassignedMerchantsFailure,
 } = merchantSlice.actions;
 
 export default merchantSlice.reducer;

@@ -11,6 +11,12 @@ import {
   getApproverRequest,
   getApproverSuccess,
   getApproverFailure,
+  changeApproverStatusRequest,
+  changeApproverStatusSuccess,
+  changeApproverStatusFailure,
+   editApproverRequest,
+  editApproverSuccess,
+  editApproverFailure,
 } from '../slice/approverSlice';
 
 interface AddApproverPayload {
@@ -27,10 +33,10 @@ function* addApproverWorker(action: PayloadAction<AddApproverPayload>) {
     const merchantData:any = action.payload;
 
     const response = yield call(() => apiCaller('post', 'admin/addApprover', merchantData));
+
     yield put(addApproverSuccess(response));
     toastUtil.success(response?.message || 'Approver added successfully!');
-    navigateTo("/dashboard/approvers");
-
+    // navigateTo("/dashboard/approvers");
   } catch (error) {
     const message = error?.response?.data?.message || 'Failed to add Approver. Please try again.';
     yield put(addApproverFailure(message));
@@ -47,7 +53,7 @@ function* getApproverWorker(action: PayloadAction<{ search?: string; page?: numb
     const response = yield call(
       apiCaller,
       'get',
-      `admin/getApprovers?page=${page}&limit=${10}&search=${search}`
+      `admin/getApprovers?page=${page}&limit=${limit}&search=${search}`
     );
 
     yield put(getApproverSuccess(response));
@@ -58,8 +64,40 @@ function* getApproverWorker(action: PayloadAction<{ search?: string; page?: numb
   }
 }
 
+function* changeApproverStatusWorker(action: PayloadAction<{id?:any,status:string}>) {
+  try {
+    const { id, status } = action.payload;
+    const response = yield call(() => apiCaller('put', `admin/approver/status/${id}`, { status }));
+    yield put(changeApproverStatusSuccess());
+    toastUtil.success(response?.message || 'Status updated successfully!');
+    // Refresh list (optional)
+    // yield put(getMerchantsRequest({ page: 1, limit: 10, search: '' }));
+  } catch (error) {
+    const message = error?.response?.data?.message || 'Failed to update status.';
+    yield put(changeApproverStatusFailure(message));
+    toastUtil.error(message);
+  }
+}
+
+function* editApproverWorker(action: PayloadAction<{ id: string; data: any }>) {
+  try {
+    const { id, data } = action.payload;
+    const response = yield call(() =>
+      apiCaller('put', `admin/editApprover/${id}`, data)
+    );
+    yield put(editApproverSuccess());
+    toastUtil.success(response?.message || 'Approver updated successfully!');
+    navigateTo('/dashboard/approvers');
+  } catch (error) {
+    const message = error?.response?.data?.message || 'Failed to update Approver.';
+    yield put(editApproverFailure(message));
+    toastUtil.error(message);
+  }
+}
+
 export default function* approverSaga() {
   yield takeLatest(addApproverRequest.type, addApproverWorker);
   yield takeLatest(getApproverRequest.type, getApproverWorker);
-
+  yield takeLatest(changeApproverStatusRequest.type, changeApproverStatusWorker);
+yield takeLatest(editApproverRequest.type, editApproverWorker); 
 }

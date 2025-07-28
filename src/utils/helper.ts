@@ -1,16 +1,16 @@
 import {
-    APPROVER_ASSIGNMENTS_LINK,
+    // APPROVER_ASSIGNMENTS_LINK,
     APPROVERS_LINK,
     AUTO_DEPOSIT_LINK,
     BULK_DEPOSIT_LINK,
     DASHBOARD_LINK,
-    DEPOSIT_OVERVIEW_LINK,
-    MANUAL_DEPOSIT_LINK,
-    MANUAL_WITHDRAW_LINK,
+    // DEPOSIT_OVERVIEW_LINK,
+    // MANUAL_DEPOSIT_LINK,
+    // MANUAL_WITHDRAW_LINK,
     MERCHANTS_LINK,
     PAYMENT_REPORTS_LINK,
     SETTINGS_LINK,
-    UPLOAD_LOGS_LINK
+    // UPLOAD_LOGS_LINK
 } from "./constant";
 
 export const SIDEBAR_DATA_LIST = [
@@ -35,21 +35,21 @@ export const SIDEBAR_DATA_LIST = [
             },
         ]
     },
-    {
-        title: "Approver Assignments",
-        icon: "approverassignment",
-        path: APPROVER_ASSIGNMENTS_LINK,
-    },
-    {
-        title: "Upload-Logs (Bank/UPI)",
-        icon: "upload",
-        path: UPLOAD_LOGS_LINK,
-    },
-    {
-        title: "Deposits Overview",
-        icon: "depositsoverview",
-        path: DEPOSIT_OVERVIEW_LINK,
-    },
+    // {
+    //     title: "Approver Assignments",
+    //     icon: "approverassignment",
+    //     path: APPROVER_ASSIGNMENTS_LINK,
+    // },
+    // {
+    //     title: "Upload-Logs (Bank/UPI)",
+    //     icon: "upload",
+    //     path: UPLOAD_LOGS_LINK,
+    // },
+    // {
+    //     title: "Deposits Overview",
+    //     icon: "depositsoverview",
+    //     path: DEPOSIT_OVERVIEW_LINK,
+    // },
     {
         title: "Reports",
         icon: "reports",
@@ -59,16 +59,16 @@ export const SIDEBAR_DATA_LIST = [
                 icons: "settings",
                 path: AUTO_DEPOSIT_LINK,
             },
-            {
-                title: "Manual Deposit",
-                icons: "manualdeposit",
-                path: MANUAL_DEPOSIT_LINK,
-            },
-            {
-                title: "Manual Withdraw",
-                icons: "manualwhitdraw",
-                path: MANUAL_WITHDRAW_LINK,
-            },
+            // {
+            //     title: "Manual Deposit",
+            //     icons: "manualdeposit",
+            //     path: MANUAL_DEPOSIT_LINK,
+            // },
+            // {
+            //     title: "Manual Withdraw",
+            //     icons: "manualwhitdraw",
+            //     path: MANUAL_WITHDRAW_LINK,
+            // },
         ]
     },
     {

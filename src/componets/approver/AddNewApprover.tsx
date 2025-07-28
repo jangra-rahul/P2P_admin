@@ -9,11 +9,13 @@ import Icons from '../common/Icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store/store';
 import { addApproverRequest, resetAddApprover } from '@/redux/slice/approverSlice';
+import ApproverMerchantsList from './ApproverMerchantsList';
 
 const AddNewApprover = () => {
     const router = useRouter();
-
-        const { loading, success, error } = useSelector((state:RootState) => state.approver);
+        const { loading, success,newApproverId } = useSelector((state:RootState) => state.approver);
+   const [showMerchantAssign, setShowMerchantAssign] = useState<any>(false);
+const [approverId, setApproverId] = useState<any>("");
 const dispatch = useDispatch();
     const [formData, setFormData] = useState<any>({
         approverName: '',
@@ -22,8 +24,7 @@ const dispatch = useDispatch();
         password: '',
     });
 
-    // const [showSuccess, setShowSuccess] = useState(false);
-    // const [loader, setLoader] = useState(false);
+     
     const [actionType, setActionType] = useState("");
 
     const handleChange = (e) => {
@@ -31,7 +32,8 @@ const dispatch = useDispatch();
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const isFormValid = Object.values(formData).every((value:any) => value.trim() !== "");
+   const isFormValid =
+  Object.values(formData).every((value: any) => value.trim() !== "");
 
  const handleSubmit = (e) => {
         e.preventDefault();
@@ -39,49 +41,33 @@ const dispatch = useDispatch();
         dispatch(addApproverRequest(formData));
     };
 
-    useEffect(() => {
-        if (success) {
-            // Redirect after 3 sec
-            const timer = setTimeout(() => {
-                dispatch(resetAddApprover());
-            }, 3000);
-            return () => clearTimeout(timer);
-        }
-    }, [success, dispatch, router]);
-
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     if (!isFormValid || loading || !actionType) return;
-
-    //     setLoading(true);
-
-    //     // Simulate API call
-    //     setTimeout(() => {
-    //         console.log(`Form submitted via "${actionType}"`, formData);
-
-    //         setShowSuccess(true);
-    //         setFormData({
-    //             approverName: '',
-    //             email: '',
-    //             setDailyLimit: '',
-    //             password: '',
-    //         });
-    //         setLoading(false);
-
-    //         setTimeout(() => {
-    //             setShowSuccess(false);
-    //             if (actionType === "save") {
-    //                 router.push("/dashboard/approvers");
-    //             } else {
-    //                 router.push("/dashboard/merchants");
-    //             }
+    // useEffect(() => {
+    //     if (success) {
+    //         // Redirect after 3 sec
+    //         const timer = setTimeout(() => {
+    //             dispatch(resetAddApprover());
     //         }, 3000);
-    //     }, 2000);
-    // };
+    //         return () => clearTimeout(timer);
+    //     }
+    // }, [success, dispatch, router]);
+
+    useEffect(() => {
+  if (success) {
+    if (actionType === "skip") {
+      router.push("/dashboard/approvers");
+    } else if (actionType === "save"&&newApproverId ) {
+      setApproverId(newApproverId);
+      setShowMerchantAssign(true);
+    }
+
+    dispatch(resetAddApprover());
+  }
+}, [success, actionType, dispatch, router,newApproverId]);
 
     const handleClick = (type) => {
         setActionType(type); // 'skip' or 'save'
     };
+
 
     return (
         <div className="max-w-[1100px] 2xl:mx-auto min-[1441px]:max-w-[1200px] lg:px-[22px] bg-white w-full relative py-3 rounded-xl">
@@ -117,22 +103,21 @@ const dispatch = useDispatch();
                         Set Daily Limit
                     </InputWithLabelSub>
 
-                    <InputWithLabelSub
+                   <div>
+                     <InputWithLabelSub
                         name="password"
                         type="password"
-                        placeholder="Enter password"
+                        placeholder="Enter 6 digit password"
                         value={formData.password}
                         onChange={handleChange}
                     >
                         Password
                     </InputWithLabelSub>
+                   {formData.password && formData.password.length < 6 && (
+  <p className="text-xs text-red-500 mt-2 ps-2">Password must be at least 6 digits</p>
+)}
+                   </div>
                 </div>
-
-                {/* {showSuccess && (
-                    <div className="text-green-600 text-xl mt-4 text-center font-medium">
-                        ✔️ Data saved successfully!
-                    </div>
-                )} */}
 
                 <div className="flex flex-col sm:flex-row gap-3 justify-center md:justify-end mt-6">
                     <button
@@ -162,8 +147,10 @@ const dispatch = useDispatch();
                     </button>
                 </div>
             </form>
-            {/* <ApproverMerchantsList /> */}
-            {/* <ApproverPopUp /> */}
+
+           {/* {showMerchantAssign && approverId && ( */}
+  <ApproverMerchantsList approverId={approverId} disabled={!success} />
+{/* )} */}
         </div>
     );
 };

@@ -34,9 +34,10 @@ export async function apiCaller<T>(
       localStorage.removeItem('token');
       Router.push('/auth/login');
         toastUtil.error('Session expired. Please log in again.');
-    } else {
-      toastUtil.error(err.response?.data?.message || 'Something went wrong');
-    }
+    } 
+    // else {
+    //   toastUtil.error(err.response?.data?.message || 'Something went wrong');
+    // }
 
     throw err;
   }
