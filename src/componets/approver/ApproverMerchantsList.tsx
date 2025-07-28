@@ -115,10 +115,10 @@ const  ApproverMerchantsList = ({
                 )}
             />
             <div className="flex justify-end my-7 md:my-8">
-                <CtaButton disabled={disabled}
+                <CtaButton disabled={disabled===false}
  onClick={handleSaveMerchants} left main  className={`py-3 px-5 ${
-    disabled
-      ? 'bg-purple/60 text-white cursor-not-allowed'
+    disabled ===false
+      ? 'bg-black text-white cursor-not-allowed'
       : 'bg-purple text-white'
   }`}>Save</CtaButton>
             </div>
