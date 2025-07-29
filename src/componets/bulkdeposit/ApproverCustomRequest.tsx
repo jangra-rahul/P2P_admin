@@ -82,7 +82,7 @@ const ApproverCustomRequest = () => {
     const handleCheckboxChange = (name) => {
         setSelectedBanks((prev) =>
             prev.includes(name)
-                ? prev.filter((id) => id !== name)
+                ? prev?.filter((id) => id !== name)
                 : [...prev, name]
         );
     };

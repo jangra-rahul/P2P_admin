@@ -199,7 +199,7 @@ const PaymentReport = () => {
     const handleCheckboxChange = (name) => {
         setSelectedMerchants((prev) =>
             prev.includes(name)
-                ? prev.filter((id) => id !== name)
+                ? prev?.filter((id) => id !== name)
                 : [...prev, name]
         );
     };

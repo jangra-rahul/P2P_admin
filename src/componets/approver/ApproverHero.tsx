@@ -59,7 +59,7 @@ const router = useRouter();
 
   const handleCheckboxChange = (name) => {
     setSelectedMerchants((prev) =>
-      prev.includes(name) ? prev.filter((id) => id !== name) : [...prev, name]
+      prev.includes(name) ? prev?.filter((id) => id !== name) : [...prev, name]
     );
   };
 

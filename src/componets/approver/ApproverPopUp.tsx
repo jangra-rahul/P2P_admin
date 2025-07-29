@@ -22,15 +22,15 @@ const ApproverPopUp: React.FC<Props> = ({
   const [visibleMerchants, setVisibleMerchants] = useState<any[]>([]);
 
 
-  const { merchants, loading }: any = useSelector(
+  const { assignedMerchants, loading }: any = useSelector(
     (state: RootState) => state.merchant
   );
   const {model }: any = useSelector(
     (state: RootState) => state.assignMerchant
   );
-  const merchantsData: any = merchants || [];
+//   const merchantsData: any = assignedMerchants?.data || [];
 
-  console.log(merchantsData);
+//   console.log(merchantsData);
 
   useEffect(() => {
     if (popupApprover?._id) {
@@ -41,18 +41,18 @@ const ApproverPopUp: React.FC<Props> = ({
   }, [dispatch, popupApprover]);
 
 useEffect(() => {
-  setVisibleMerchants(Array.isArray(merchants) ? merchants : []);
-}, [merchants]);
+  setVisibleMerchants(Array.isArray(assignedMerchants?.data) ? assignedMerchants?.data : []);
+}, [assignedMerchants?.data]);
 
 
   const handleUnassignClick = (merchantId: string) => {
     setSelectedMerchants(
       (prev) =>
         prev.includes(merchantId)
-          ? prev.filter((id) => id !== merchantId) // toggle off
+          ? prev?.filter((id) => id !== merchantId) // toggle off
           : [...prev, merchantId] // toggle on
     );
-    setVisibleMerchants((prev) => prev.filter((m) => m.merchantId !== merchantId));
+    setVisibleMerchants((prev) => prev?.filter((m) => m.merchantId !== merchantId));
 
   };
 

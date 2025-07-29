@@ -24,10 +24,9 @@ const  ApproverMerchantsList = ({
 
     
   const dispatch = useDispatch();
-  const { merchants } :any = useSelector(
+  const { unassignedMerchants } :any = useSelector(
     (state: RootState) => state.merchant
   );
-  const merchantsData:any = merchants || [];
 
   
    useEffect(() => {
@@ -39,7 +38,7 @@ const  ApproverMerchantsList = ({
     prev.includes(id) ? prev?.filter((i) => i !== id) : [...prev, id]
   );
 };
-    const filteredMerchants:any = merchantsData?.filter((merchant) =>
+    const filteredMerchants:any = unassignedMerchants?.data?.filter((merchant) =>
         merchant?.merchantName?.toLowerCase().includes(tempSearchTerm?.toLowerCase())
     );
 
@@ -85,14 +84,14 @@ const  ApproverMerchantsList = ({
                 data={filteredMerchants}
                 showCheckbox
                 allChecked={
-                    filteredMerchants.length > 0 &&
-                    selectedMerchants.length === filteredMerchants.length
+                    filteredMerchants?.length > 0 &&
+                    selectedMerchants?.length === filteredMerchants?.length
                 }
                onCheckAll={() => {
-  if (selectedMerchants.length === filteredMerchants.length) {
+  if (selectedMerchants.length === filteredMerchants?.length) {
     setSelectedMerchants([]);
   } else {
-    setSelectedMerchants(filteredMerchants.map((m) => m._id));
+    setSelectedMerchants(filteredMerchants?.map((m) => m._id));
   }
 }}
                 renderRow={(m, i) => (

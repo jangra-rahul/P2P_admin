@@ -147,7 +147,7 @@ const BulkListData = () => {
 
     const handleCheckboxChange = (name) => {
         setSelectedBanks((prev) =>
-            prev.includes(name) ? prev.filter((id) => id !== name) : [...prev, name]
+            prev.includes(name) ? prev?.filter((id) => id !== name) : [...prev, name]
         );
     };
 

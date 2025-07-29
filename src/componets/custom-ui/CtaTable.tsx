@@ -6,7 +6,7 @@ const CtaTable = ({ columns = [], data = [], renderRow, showCheckbox = false, on
     return (
         //  lg:max-w-[692px] xl:max-w-[1028px] 2xl:max-w-[1156px] 
         <div className="overflow-auto lg:max-w-[calc(100vw-340px)] xl:max-w-[calc(100vw-380px)] 2xl:max-w-[calc(100vw-416px)]">
-            {data.length === 0 ? (
+            {data?.length === 0 ? (
                 <div className="text-center text-gray-500 text-sm py-10">Data not found</div>
             ) : (
                 <table className="w-full text-sm">
@@ -22,7 +22,7 @@ const CtaTable = ({ columns = [], data = [], renderRow, showCheckbox = false, on
                                     />
                                 </th>
                             )}
-                            {columns.map((col, idx) => {
+                            {columns?.map((col, idx) => {
                                 const label = typeof col === "string" ? col : col.label;
                                 const className = typeof col === "object" && col.className ? col.className : "";
                                 return (
@@ -38,7 +38,7 @@ const CtaTable = ({ columns = [], data = [], renderRow, showCheckbox = false, on
                         </tr>
                     </thead>
                     <tbody className="border-b border-[#E4E6E8]">
-                        {data.map((item, i) => renderRow(item, i))}
+                        {data?.map((item, i) => renderRow(item, i))}
                     </tbody>
                 </table>
             )}

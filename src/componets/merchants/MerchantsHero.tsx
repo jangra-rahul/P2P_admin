@@ -16,7 +16,6 @@ const MerchantsHero = () => {
   const [statusFilter, setStatusFilter] = useState("");
   const [selectedMerchants, setSelectedMerchants] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
 const [editMerchant, setEditMerchant] = useState<any>(null);
 
 
@@ -24,60 +23,33 @@ const [editMerchant, setEditMerchant] = useState<any>(null);
   const { merchants } :any = useSelector(
     (state: RootState) => state.merchant
   );
-  const merchantsData:any = merchants?.data || [];
-  const pagenationData:any = merchants?.pagination || [];
-
- 
+  const merchantsData:any = merchants?.data?.data || [];
   
    useEffect(() => {
     dispatch(getMerchantsRequest({ search: tempSearchTerm, page: currentPage, limit: 10 }));
   }, [dispatch, tempSearchTerm, currentPage]);
   
-  
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTempSearchTerm(e.target.value);
-    setCurrentPage(1); // Reset to page 1 when searching
-  };
-  
-
   const filteredMerchants = merchantsData?.filter((merchant) => {
       const matchesName = nameFilter === "" || merchant?.merchantName === nameFilter;
       const matchesStatus =
         statusFilter === "" || merchant?.status === statusFilter;
       return matchesName && matchesStatus;
-    })
-    .filter((merchant) =>
+    })?.filter((merchant) =>
       merchant?.merchantName?.toLowerCase().includes(tempSearchTerm.toLowerCase())
     );
 
   // Get current merchants
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 const currentMerchants = merchantsData;
-const totalPages = Math.ceil((pagenationData.totalCount || 0) / itemsPerPage);
 
 
   const handleCheckboxChange = (email) => {
     setSelectedMerchants((prev) =>
       prev.includes(email)
-        ? prev.filter((id) => id !== email)
+        ? prev?.filter((id) => id !== email)
         : [...prev, email]
     );
   };
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
 
     const handleStatusToggle = (merchant) => {
     const normalizedStatus = merchant.status?.toLowerCase();
@@ -118,7 +90,7 @@ const totalPages = Math.ceil((pagenationData.totalCount || 0) / itemsPerPage);
             "DAILY LIMIT",
             "EMAIL",
             "STATUS",
-            "CREATED ON",
+            // "CREATED ON",
             "ACTION",
           ]}
           data={currentMerchants}
@@ -169,7 +141,7 @@ const totalPages = Math.ceil((pagenationData.totalCount || 0) / itemsPerPage);
                   {m.status}
                 </span>
               </td>
-              <td className="text-[#4B5563] text-sm font-normal text-nowrap px-2.5">
+              {/* <td className="text-[#4B5563] text-sm font-normal text-nowrap px-2.5">
   {new Date(m.createdAt).toLocaleString("en-US", {
     month: "short",
     day: "2-digit",
@@ -178,7 +150,7 @@ const totalPages = Math.ceil((pagenationData.totalCount || 0) / itemsPerPage);
     minute: "2-digit",
     hour12: true,
   })}
-</td>
+</td> */}
               <td className="text-[#4B5563] text-sm font-normal text-nowrap px-2.5 space-x-2">
                 {/* <button className="text-sm cursor-pointer underline">
                   View
@@ -199,9 +171,9 @@ const totalPages = Math.ceil((pagenationData.totalCount || 0) / itemsPerPage);
       </div>
 
       <CtaPagination
-  currentPage={pagenationData.currentPage || 1}
-  totalItems={pagenationData.totalCount || 0}
-  itemsPerPage={pagenationData.limit || 10}
+  currentPage={merchants?.data?.pagination?.currentPage || 1}
+  totalItems={merchants?.data?.pagination?.totalCount || 0}
+  itemsPerPage={merchants?.data?.pagination?.limit || 10}
   onPageChange={(page) => setCurrentPage(page)}
 />
 
