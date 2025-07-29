@@ -17,6 +17,7 @@ import {
    editApproverRequest,
   editApproverSuccess,
   editApproverFailure,
+  
 } from '../slice/approverSlice';
 
 interface AddApproverPayload {
@@ -64,6 +65,7 @@ function* getApproverWorker(action: PayloadAction<{ search?: string; page?: numb
   }
 }
 
+
 function* changeApproverStatusWorker(action: PayloadAction<{id?:any,status:string}>) {
   try {
     const { id, status } = action.payload;
@@ -87,7 +89,7 @@ function* editApproverWorker(action: PayloadAction<{ id: string; data: any }>) {
     );
     yield put(editApproverSuccess());
     toastUtil.success(response?.message || 'Approver updated successfully!');
-    navigateTo('/dashboard/approvers');
+    // navigateTo('/dashboard/approvers');
   } catch (error) {
     const message = error?.response?.data?.message || 'Failed to update Approver.';
     yield put(editApproverFailure(message));

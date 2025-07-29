@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { getUnassignedMerchantsRequest } from "@/redux/slice/merchantSlice";
 import { assignMerchantRequest } from "@/redux/slice/assignMerchantSlice";
+import { toastUtil } from "@/utils/toastUtil";
 
 
 
@@ -43,6 +44,16 @@ const  ApproverMerchantsList = ({
     );
 
     const handleSaveMerchants = () => {
+
+          if (!approverId) {
+    toastUtil.error("Please save the approver details first before assigning merchants.");
+    return;
+  }
+         if (selectedMerchants.length === 0) {
+    toastUtil.error("Please select at least one merchant to assign.");
+    return;
+  }
+
   if (!approverId || selectedMerchants.length === 0) return;
 
   dispatch(assignMerchantRequest({
@@ -115,11 +126,11 @@ const  ApproverMerchantsList = ({
                 )}
             />
             <div className="flex justify-end my-7 md:my-8">
-                <CtaButton disabled={disabled===false}
+                <CtaButton 
  onClick={handleSaveMerchants} left main  className={`py-3 px-5 ${
-    disabled ===false
-      ? 'bg-black text-white cursor-not-allowed'
-      : 'bg-purple text-white'
+    !approverId
+      ? ' bg-purple/65 cursor-not-allowed text-white'
+      : 'bg-purple text-white cursor-not-allowed'
   }`}>Save</CtaButton>
             </div>
         </>

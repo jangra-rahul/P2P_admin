@@ -112,6 +112,24 @@ const merchantSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    getAssignedMerchantsListRequest: (
+      state,
+      _action: PayloadAction<{ search?: string }>
+    ) => {
+      state.loading = true;
+      state.error = null;
+    },
+    getAssignedMerchantsListSuccess: (
+      state,
+      action: PayloadAction<{ data: Merchant[] }>
+    ) => {
+      state.loading = false;
+      state.merchants = action.payload.data;
+    },
+    getAssignedMerchantsListFailure: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
   },
 });
 
@@ -132,6 +150,9 @@ export const {
   getUnassignedMerchantsRequest,
 getUnassignedMerchantsSuccess,
 getUnassignedMerchantsFailure,
+  getAssignedMerchantsListRequest,
+getAssignedMerchantsListSuccess,
+getAssignedMerchantsListFailure,
 } = merchantSlice.actions;
 
 export default merchantSlice.reducer;

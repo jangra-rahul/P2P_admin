@@ -7,8 +7,13 @@ import CtaTable from "../custom-ui/CtaTable";
 import ApproverPopUp from "./ApproverPopUp";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
-import { changeApproverStatusRequest, editApproverRequest, getApproverRequest } from "@/redux/slice/approverSlice";
-import EditApproverPopUp from "./EditApproverModal";
+import {
+  changeApproverStatusRequest,
+  editApproverRequest,
+  getApproverRequest,
+} from "@/redux/slice/approverSlice";
+// import EditApproverPopUp from "./EditApproverModal";
+import { useRouter } from "next/navigation";
 
 const approverColumns = [
   "APPROVER NAME",
@@ -22,18 +27,18 @@ const ApproverHero = () => {
   const [tempSearchTerm, setTempSearchTerm] = useState("");
   const [selectedMerchants, setSelectedMerchants] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
   const [popupApprover, setPopupApprover] = useState(null);
-  const [editApprover, setEditApprover] = useState(null);
+const router = useRouter();
 
+//   console.log("popupApprover",popupApprover)
 
   const dispatch = useDispatch();
   const { approvers }: any = useSelector((state: RootState) => state.approver);
 
-  const approversData = approvers?.data || [];
-  const pagenationData = approvers?.pagination || [];
+//   const approversData = approvers?.data || [];
+//   const pagenationData = approvers?.pagination || {};
 
-  console.log(approversData);
+//   console.log(approversData);
 
   useEffect(() => {
     dispatch(
@@ -50,10 +55,7 @@ const ApproverHero = () => {
     setCurrentPage(1); // Reset to page 1 when searching
   };
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentMerchants = approversData;
-  const totalPages = Math.ceil((pagenationData.totalCount || 0) / itemsPerPage);
+  const currentMerchants = approvers?.data||[];
 
   const handleCheckboxChange = (name) => {
     setSelectedMerchants((prev) =>
@@ -61,30 +63,31 @@ const ApproverHero = () => {
     );
   };
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  const handlePrevPage = () =>
-    currentPage > 1 && setCurrentPage(currentPage - 1);
-  const handleNextPage = () =>
-    currentPage < totalPages && setCurrentPage(currentPage + 1);
-
   const handleStatusToggle = (approver) => {
-  const normalizedStatus = approver.status?.toLowerCase();
+    const normalizedStatus = approver?.status?.toLowerCase();
 
-  const newStatus = normalizedStatus === "active" ? "inactive" : "active";
+    const newStatus = normalizedStatus === "active" ? "inactive" : "active";
+
+    dispatch(
+      changeApproverStatusRequest({
+        id: approver._id,
+        status: newStatus,
+      })
+    );
+
+    setTimeout(() => {
+      dispatch(
+        getApproverRequest({
+          search: tempSearchTerm,
+          page: currentPage,
+          limit: 10,
+        })
+      );
+    }, 500);
+  };
 
 
-  dispatch(
-    changeApproverStatusRequest({
-      id: approver._id, // or approver.id depending on your data
-      status: newStatus,
-    })
-  );
-
-  // Optional: reload list after a delay or use success saga to auto-refresh
-  setTimeout(() => {
-    dispatch(getApproverRequest({ search: tempSearchTerm, page: currentPage, limit: 10 }));
-  }, 500);
-};
+  
 
   return (
     <div className="max-w-[1100px] 2xl:mx-auto min-[1441px]:max-w-[1200px] lg:px-[22px] bg-white w-full relative py-3 rounded-xl">
@@ -102,13 +105,13 @@ const ApproverHero = () => {
         showCheckbox
         allChecked={
           currentMerchants.length > 0 &&
-          selectedMerchants.length === currentMerchants.length
+          selectedMerchants?.length === currentMerchants?.length
         }
         onCheckAll={() => {
-          if (selectedMerchants.length === currentMerchants.length) {
+          if (selectedMerchants?.length === currentMerchants?.length) {
             setSelectedMerchants([]);
           } else {
-            setSelectedMerchants(currentMerchants.map((m) => m.approverName));
+            setSelectedMerchants(currentMerchants?.map((m) => m.approverName));
           }
         }}
         renderRow={(m, i) => (
@@ -116,25 +119,27 @@ const ApproverHero = () => {
             <td className="md:px-[15px] py-3 lg:py-[14px] px-2">
               <input
                 type="checkbox"
-                checked={selectedMerchants.includes(m.approverName)}
+                checked={selectedMerchants?.includes(m.approverName)}
                 onChange={() => handleCheckboxChange(m.approverName)}
                 className="border-[#959BA4] rounded-[5px] cursor-pointer"
               />
             </td>
             <td className="text-[#4B5563] text-sm font-normal text-nowrap px-2.5">
-              {m.approverName}
+              {m.approverName || "--"}
             </td>
             <td className="text-[#4B5563] text-sm font-normal text-nowrap px-2.5">
               {/* {m.assigned} 👁️ View */}
               <button
-                onClick={() => setPopupApprover(m.approverName)}
+                onClick={() => setPopupApprover(m)}
                 className={`text-sm cursor-pointer ${
-                  popupApprover === m.approverName
+                  popupApprover === m?.approverName
                     ? "text-[#4B5563]/65"
                     : "text-[#4B5563]"
                 }`}
               >
-                {popupApprover === m.assigned ? "👁️ View" : `${m?.assignedMerchantCount} 👁️ View`}
+                {popupApprover === m?.assigned
+                  ? "👁️ View"
+                  : `${m?.assignedMerchantCount} 👁️ View`}
               </button>
             </td>
 
@@ -160,11 +165,16 @@ const ApproverHero = () => {
               </span>
             </td>
             <td className="text-end text-sm font-normal text-nowrap px-2.5 space-x-2">
-              <button onClick={() => setEditApprover(m)}
- className="text-sm text-[#4B5563] cursor-pointer underline">
+              <button
+                // onClick={() => setEditApprover(m)} 
+                onClick={() => router.push(`/dashboard/approvers/edit-approver/${m._id}`)}
+
+                className="text-sm text-[#4B5563] cursor-pointer underline"
+              >
                 Edit
               </button>
-              <button onClick={() => handleStatusToggle(m)}
+              <button
+                onClick={() => handleStatusToggle(m)}
                 // onClick={() => setPopupApprover(m.approverName)}
                 className={`text-sm cursor-pointer underline ${
                   popupApprover === m.approverName
@@ -172,16 +182,16 @@ const ApproverHero = () => {
                     : "text-[#4B5563]"
                 }`}
               >
-{m.status?.toLowerCase() === "active" ? "Disable" : "Enable"}
+                {m.status?.toLowerCase() === "active" ? "Disable" : "Enable"}
               </button>
             </td>
           </tr>
         )}
       />
       <CtaPagination
-        currentPage={pagenationData.currentPage || 1}
-        totalItems={pagenationData.totalCount || 0}
-        itemsPerPage={pagenationData.limit || 10}
+        currentPage={approvers?.pagination?.currentPage || 1 }
+        totalItems={approvers?.pagination?.totalCount || 0 }
+        itemsPerPage={approvers?.pagination?.limit || 10 }
         onPageChange={(page) => setCurrentPage(page)}
       />
       {popupApprover ? (
@@ -192,17 +202,16 @@ const ApproverHero = () => {
       ) : (
         ""
       )}
-      {editApprover && (
-  <EditApproverPopUp
-    approver={editApprover}
-    onSave={(data) => {
-    dispatch(editApproverRequest({ id: editApprover._id, data }));
-    setEditApprover(null); // close modal
-  }}
-
-    onClose={() => setEditApprover(null)}
-  />
-)}
+      {/* {editApprover && (
+        <EditApproverPopUp
+          approver={editApprover}
+          onSave={(data) => {
+            dispatch(editApproverRequest({ id: editApprover._id, data }));
+            setEditApprover(null); // close modal
+          }}
+          onClose={() => setEditApprover(null)}
+        />
+      )} */}
     </div>
   );
 };

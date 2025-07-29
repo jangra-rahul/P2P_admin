@@ -75,6 +75,7 @@ editApproverFailure: (state, action: PayloadAction<string>) => {
   state.loading = false;
   state.error = action.payload;
 },
+ 
   },
 });
 

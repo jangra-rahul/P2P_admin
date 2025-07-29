@@ -20,6 +20,9 @@ import {
   getUnassignedMerchantsRequest,
 getUnassignedMerchantsSuccess,
 getUnassignedMerchantsFailure,
+  getAssignedMerchantsListRequest,
+getAssignedMerchantsListSuccess,
+getAssignedMerchantsListFailure,
 } from '../slice/merchantSlice';
 
 interface AddMerchantPayload {
@@ -113,7 +116,19 @@ function* getUnassignedMerchantsWorker(action: PayloadAction<{ search?: string }
     toastUtil.error(message);
   }
 }
-
+function* getAssignedMerchantListsWorker(action: PayloadAction<{ approverId: string }>) {
+  try {
+    const { approverId } = action.payload;
+    const response = yield call(() =>
+      apiCaller('get', `admin/assignedMerchants/${approverId}`)
+    );
+    yield put(getAssignedMerchantsListSuccess(response));
+  } catch (error) {
+    const message = error?.response?.data?.message || 'Failed to fetch assigned merchants.';
+    yield put(getAssignedMerchantsListFailure(message));
+    toastUtil.error(message);
+  }
+}
 
 export default function* merchantSaga() {
   yield takeLatest(addMerchantRequest.type, addMerchantWorker);
@@ -121,5 +136,6 @@ export default function* merchantSaga() {
   yield takeLatest(changeMerchantStatusRequest.type, changeMerchantStatusWorker);
 yield takeLatest(editMerchantRequest.type, editApproverWorker); 
 yield takeLatest(getUnassignedMerchantsRequest.type, getUnassignedMerchantsWorker);
+yield takeLatest(getAssignedMerchantsListRequest.type, getAssignedMerchantListsWorker);
 
 }

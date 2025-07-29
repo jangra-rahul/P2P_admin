@@ -40,8 +40,7 @@ const [editMerchant, setEditMerchant] = useState<any>(null);
   };
   
 
-  const filteredMerchants = merchantsData
-    ?.filter((merchant) => {
+  const filteredMerchants = merchantsData?.filter((merchant) => {
       const matchesName = nameFilter === "" || merchant?.merchantName === nameFilter;
       const matchesStatus =
         statusFilter === "" || merchant?.status === statusFilter;
@@ -181,9 +180,9 @@ const totalPages = Math.ceil((pagenationData.totalCount || 0) / itemsPerPage);
   })}
 </td>
               <td className="text-[#4B5563] text-sm font-normal text-nowrap px-2.5 space-x-2">
-                <button className="text-sm cursor-pointer underline">
+                {/* <button className="text-sm cursor-pointer underline">
                   View
-                </button>
+                </button> */}
                 <button onClick={() => setEditMerchant(m)} className="text-sm cursor-pointer underline">
                   Edit
                 </button>

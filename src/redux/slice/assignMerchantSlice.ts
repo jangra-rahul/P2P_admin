@@ -5,6 +5,7 @@ interface AssignMerchantState {
   error: any;
   success: boolean;
   assignedMerchantId: string | null;
+  model:boolean;
 }
 
 interface AssignMerchantPayload {
@@ -17,6 +18,7 @@ const initialState: AssignMerchantState = {
   error: null,
   success: false,
   assignedMerchantId: null,
+  model:false
 };
 
 const assignMerchantSlice = createSlice({
@@ -37,11 +39,29 @@ const assignMerchantSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    unAssignMerchantRequest: (state, _action: PayloadAction<AssignMerchantPayload>) => {
+      state.loading = true;
+      state.error = null;
+      state.success = false;
+    },
+    unAssignMerchantSuccess: (state, action: PayloadAction<any>) => {
+      state.loading = false;
+      state.success = true;
+      state.model=true;
+      state.assignedMerchantId = action.payload?.data?._id || null;
+    },
+    unAssignMerchantFailure: (state, action: PayloadAction<any>) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
     resetAssignMerchant: (state) => {
       state.loading = false;
       state.success = false;
       state.error = null;
       state.assignedMerchantId = null;
+    },
+    toggleModelRequest : (state, action: PayloadAction<any>) => {
+        state.model=action.payload;
     },
   },
 });
@@ -50,7 +70,11 @@ export const {
   assignMerchantRequest,
   assignMerchantSuccess,
   assignMerchantFailure,
+  unAssignMerchantRequest,
+  unAssignMerchantSuccess,
+  unAssignMerchantFailure,
   resetAssignMerchant,
+  toggleModelRequest
 } = assignMerchantSlice.actions;
 
 export default assignMerchantSlice.reducer;
