@@ -1,3 +1,4 @@
+"use client"
 import React, { useState } from "react";
 import InputWithLabelSub from "../custom-ui/InputWithLabelSub";
 import Icons from "../common/Icons";
