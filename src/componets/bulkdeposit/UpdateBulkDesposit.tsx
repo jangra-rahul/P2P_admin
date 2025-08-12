@@ -395,7 +395,7 @@ const UpdateBulkDesposit = ({ updateBulkDespositData, setUpdateBulkDespositData 
                 name="txnCode"
                 type="text"
                 placeholder="********"
-                iconValue="toggleunactive"
+                iconValue="toggleiactive"
               >
                 Transaction Code
               </InputWithLabelSub>

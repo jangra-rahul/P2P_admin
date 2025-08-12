@@ -4,7 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { getAssignedMerchantsListRequest } from "@/redux/slice/merchantSlice";
 import { Spinner } from "react-bootstrap";
-import { toggleModelRequest, unAssignMerchantRequest } from "@/redux/slice/assignMerchantSlice";
+import {
+  toggleModelRequest,
+  unAssignMerchantRequest,
+} from "@/redux/slice/assignMerchantSlice";
 import { getApproverRequest } from "@/redux/slice/approverSlice";
 import { toastUtil } from "@/utils/toastUtil";
 
@@ -21,16 +24,15 @@ const ApproverPopUp: React.FC<Props> = ({
   const [selectedMerchants, setSelectedMerchants] = useState<string[]>([]);
   const [visibleMerchants, setVisibleMerchants] = useState<any[]>([]);
 
-
   const { assignedMerchants, loading }: any = useSelector(
     (state: RootState) => state.merchant
   );
-  const {model }: any = useSelector(
+  const { model }: any = useSelector(
     (state: RootState) => state.assignMerchant
   );
-//   const merchantsData: any = assignedMerchants?.data || [];
+  //   const merchantsData: any = assignedMerchants?.data || [];
 
-//   console.log(merchantsData);
+  //   console.log(merchantsData);
 
   useEffect(() => {
     if (popupApprover?._id) {
@@ -40,10 +42,11 @@ const ApproverPopUp: React.FC<Props> = ({
     }
   }, [dispatch, popupApprover]);
 
-useEffect(() => {
-  setVisibleMerchants(Array.isArray(assignedMerchants?.data) ? assignedMerchants?.data : []);
-}, [assignedMerchants?.data]);
-
+  useEffect(() => {
+    setVisibleMerchants(
+      Array.isArray(assignedMerchants?.data) ? assignedMerchants?.data : []
+    );
+  }, [assignedMerchants?.data]);
 
   const handleUnassignClick = (merchantId: string) => {
     setSelectedMerchants(
@@ -52,15 +55,16 @@ useEffect(() => {
           ? prev?.filter((id) => id !== merchantId) // toggle off
           : [...prev, merchantId] // toggle on
     );
-    setVisibleMerchants((prev) => prev?.filter((m) => m.merchantId !== merchantId));
-
+    setVisibleMerchants((prev) =>
+      prev?.filter((m) => m.merchantId !== merchantId)
+    );
   };
 
   const handleSaveMerchants = () => {
-      if (selectedMerchants.length === 0) {
-    toastUtil.error("Please select at least one merchant to unassign.");
-    return;
-  }
+    if (selectedMerchants.length === 0) {
+      toastUtil.error("Please select at least one merchant to unassign.");
+      return;
+    }
     dispatch(
       unAssignMerchantRequest({
         approverId: popupApprover?._id,
@@ -69,15 +73,13 @@ useEffect(() => {
     );
   };
 
-
-    useEffect(() => {
+  useEffect(() => {
     if (model) {
-       setPopupApprover(null)
-       dispatch(toggleModelRequest(false));
-       dispatch(getApproverRequest());
+      setPopupApprover(null);
+      dispatch(toggleModelRequest(false));
+      dispatch(getApproverRequest());
     }
   }, [model, dispatch]);
-
 
   return (
     <div
@@ -113,52 +115,52 @@ useEffect(() => {
               </p>
             </div>
           </div>
-          <div className="flex gap-2.5 mb-3 justify-end py-4 lg:py-5 border-dotted border-b-[0.5px] border-black/40">
-         
-          </div>
-         <p className="py-5 text-sm font-semibold text-[#374151] uppercase">
+          <div className="flex gap-2.5 mb-3 justify-end py-4 lg:py-5 border-dotted border-b-[0.5px] border-black/40"></div>
+          <p className="py-5 text-sm font-semibold text-[#374151] uppercase">
             Assigned Merchant(s) - {visibleMerchants?.length || 0}
           </p>
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-x-3 gap-y-4 sm:gap-5">
-           {Array.isArray(visibleMerchants) && visibleMerchants.length > 0 ? (
-  visibleMerchants.map((merchant: any, index: number) => (
-    <div
-      key={merchant?.merchantId ?? index}
-      className="p-2.5 flex gap-1 items-center justify-between rounded-[10px] bg-[#EDEEEF]"
-    >
-      <p className="text-[#4B5563] text-sm md:text-base">
-        {index + 1}. {merchant?.merchantName}
-      </p>
-      <span
-        onClick={() => handleUnassignClick(merchant?.merchantId)}
-        className="cursor-pointer"
-      >
-        <Icons icon="redcross" />
-      </span>
-    </div>
-  ))
-) : loading ? (
-  <div className="col-span-full">
-    <Spinner />
-  </div>
-) : (
-  <p className="text-sm text-gray-500 col-span-full">No data found</p>
-)}
+            {Array.isArray(visibleMerchants) && visibleMerchants.length > 0 ? (
+              visibleMerchants.map((merchant: any, index: number) => (
+                <div
+                  key={merchant?.merchantId ?? index}
+                  className="p-2.5 flex gap-1 items-center justify-between rounded-[10px] bg-[#EDEEEF]"
+                >
+                  <p className="text-[#4B5563] text-sm md:text-base">
+                    {index + 1}. {merchant?.merchantName}
+                  </p>
+                  <span
+                    onClick={() => handleUnassignClick(merchant?.merchantId)}
+                    className="cursor-pointer"
+                  >
+                    <Icons icon="redcross" />
+                  </span>
+                </div>
+              ))
+            ) : loading ? (
+              <div className="col-span-full">
+                <Spinner />
+              </div>
+            ) : (
+              <p className="text-sm text-gray-500 col-span-full">
+                No data found
+              </p>
+            )}
           </div>
-        <div className="flex justify-end">
-              <button
-            onClick={handleSaveMerchants}
-            disabled={selectedMerchants.length === 0}
-            className={`rounded-[10px] mt-[30px] py-2 px-8 text-sm md:text-base duration-300 text-white text-center ${
-              selectedMerchants.length === 0
-                ? "bg-purple/50 cursor-not-allowed"
-                : "bg-purple hover:opacity-85 cursor-pointer"
-            }`}
-          >
-            Save
-          </button>
-        </div>
+          <div className="flex justify-end">
+            <button
+              onClick={handleSaveMerchants}
+              disabled={selectedMerchants.length === 0}
+              className={`rounded-[10px] mt-[30px] py-2 px-8 text-sm md:text-base duration-300 text-white text-center ${
+                selectedMerchants.length === 0
+                  ? "bg-purple/50 cursor-not-allowed"
+                  : "bg-purple hover:opacity-85 cursor-pointer"
+              }`}
+            >
+              Save
+            </button>
+          </div>
         </div>
       </div>
     </div>

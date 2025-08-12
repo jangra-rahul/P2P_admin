@@ -123,10 +123,10 @@ const dispatch = useDispatch();
                     <button
                         type="submit"
                         onClick={() => handleClick("skip")}
-                        disabled={!isFormValid || loading}
-                        className={`text-base font-medium px-5 py-3 rounded-[10px] text-white flex items-center justify-center gap-2 transition-all duration-300 ${isFormValid && !loading
-                            ? "bg-purple hover:bg-purple/90 cursor-pointer"
-                            : "bg-purple/65 cursor-not-allowed"
+                        disabled={!isFormValid||formData.password.length < 6 || loading}
+                        className={`text-base font-medium px-5 py-3 rounded-[10px] text-white flex items-center justify-center gap-2 transition-all duration-300 ${isFormValid && formData.password.length >= 6 && !loading
+            ? 'bg-purple hover:bg-purple/90 cursor-pointer'
+            : 'bg-purple/65 cursor-not-allowed'
                             }`}
                     >
                         {loading && actionType === "skip" && <Icons icon="saving" />}
@@ -136,10 +136,10 @@ const dispatch = useDispatch();
                     <button
                         type="submit"
                         onClick={() => handleClick("save")}
-                        disabled={!isFormValid || loading}
-                        className={`text-base font-medium px-5 py-3 rounded-[10px] text-white flex items-center justify-center gap-2 transition-all duration-300 ${isFormValid && !loading
-                            ? "bg-purple hover:bg-purple/90 cursor-pointer"
-                            : "bg-purple/65 cursor-not-allowed"
+                        disabled={!isFormValid||formData.password.length < 6 || loading}
+                        className={`text-base font-medium px-5 py-3 rounded-[10px] text-white flex items-center justify-center gap-2 transition-all duration-300 ${isFormValid && formData.password.length >= 6 && !loading
+            ? 'bg-purple hover:bg-purple/90 cursor-pointer'
+            : 'bg-purple/65 cursor-not-allowed'
                             }`}
                     >
                         {loading && actionType === "save" && <Icons icon="saving" />}

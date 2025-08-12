@@ -51,7 +51,7 @@ const NavBar = () => {
                         <Icons icon={"notification"} />
                         <span className='w-1 h-1 rounded-full absolute top-1 right-2 inline-block bg-red'></span>
                     </div>
-                    <div className="cursor-pointer gap-3 flex items-center">
+                    {/* <div className="cursor-pointer gap-3 flex items-center">
                         <Image alt='people' src={"/assets/images/png/admin_img.png"} width={40} height={40}
                             className='sm:w-10 sm:h-10 w-8 h-8 rounded-[10px]'
                         />
@@ -62,7 +62,7 @@ const NavBar = () => {
                             </div>
                             <Icons icon={'downarrow'} />
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
             <h3 className='text-[22px] lg:hidden sm:text-2xl text-nowrap pt-6 leading-140 text-navy font-semibold'>{pageTitle}</h3>

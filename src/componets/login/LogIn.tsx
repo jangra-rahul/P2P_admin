@@ -21,8 +21,8 @@ const LogIn = () => {
 const { loading, error, data } = useSelector((state: RootState) => state.login);
 
   const [formData, setFormData] = useState<FormData>({
-    email: 'admin@gmail.com',
-    password: 'Admin@123',
+    email: '',
+    password: '',
   });
 
   const [fildError, setFildError] = useState<string>('');

@@ -26,7 +26,6 @@ function* unAssignMerchantWorker(action: any): Generator<any, void, any> {
     const response = yield call(() =>
       apiCaller('post', 'admin/unassignMerchants', action.payload)
     );
-navigateTo("/dashboard/approvers");
     yield put(unAssignMerchantSuccess(response));
     toastUtil.success(response?.message || 'Merchant assigned successfully!');
     navigateTo("/dashboard/approvers");

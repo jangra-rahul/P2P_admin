@@ -66,7 +66,7 @@ const ApproverSlice = createSlice({
   state.loading = true;
   state.error = null;
   state.success = false;
-},
+}, 
 editApproverSuccess: (state) => {
   state.loading = false;
   state.success = true;
